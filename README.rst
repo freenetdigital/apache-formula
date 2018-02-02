@@ -159,6 +159,11 @@ Enables and configures the Apache module mod_remoteip using data from Pillar. (D
 
 Installs and enables mod_xsendfile module. (Debian Only)
 
+``apache.mod_jk``
+----------------------
+
+Enables the JK module and sets up workers and loadbalancers (Debian Only)
+
 ``apache.own_default_vhost``
 --------------------------
 

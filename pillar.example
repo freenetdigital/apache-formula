@@ -346,3 +346,28 @@ apache:
     SSLHonorCipherOrder: On
     SSLOptions: "+StrictRequire"
 
+  mod_jk:
+    #you can specify own config templates here
+    workers_template: salt://apache/files/mod_jk-workers.jinja
+    loadbalancers_template: salt://apache/files/mod_jk-loadbalancers.jinja
+    
+    #list your workers here
+    workers:
+      instance_01:
+        ip: 192.168.0.10
+        port: 6003
+      instance_02:
+        ip: 192.168.0.11
+        port: 6003
+        type: ajp13
+      instance_03:
+        ip: 192.168.0.12
+        port: 6003
+        lbfactor: 2
+    
+    #list you loadbalancers here, you can refer to them from the vhost configuration
+    loadbalancers:
+      my_site_com:
+        balance_workers: instance_01,instance_02,instance_03
+        sticky_session: 1
+   

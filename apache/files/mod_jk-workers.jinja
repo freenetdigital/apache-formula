@@ -1,0 +1,7 @@
+{% for name, worker in salt['pillar.get']('apache:mod_jk:workers', {}).items() %}
+{%- set escaped_name = name.replace('.', '_') %}
+JkWorkerProperty worker.{{ escaped_name }}.host={{ worker.ip }}
+JkWorkerProperty worker.{{ escaped_name }}.lbfactor={{ worker.lbfactor|default(1) }}
+JkWorkerProperty worker.{{ escaped_name }}.port={{ worker.port|default(6001) }}
+JkWorkerProperty worker.{{ escaped_name }}.type={{ worker.type|default('ajp13') }}
+{% endfor %}

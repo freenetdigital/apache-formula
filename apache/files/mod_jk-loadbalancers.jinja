@@ -1,0 +1,7 @@
+{% for name, lb in salt['pillar.get']('apache:mod_jk:loadbalancers', {}).items() -%}
+JkWorkerProperty worker.{{ name }}.type={{ lb.type|default('lb') }}
+JkWorkerProperty worker.{{ name }}.balance_workers={{ lb.balance_workers }}
+JkWorkerProperty worker.{{ name }}.sticky_session={{ lb.sticky_session|default(1) }}
+JkWorkerProperty worker.list={{ name }}
+
+{% endfor %}
