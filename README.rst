@@ -65,6 +65,11 @@ Enables the Apache module mod_proxy_fcgi and requires the Apache module mod_prox
 
 Installs the mod_wsgi package and enables the Apache module.
 
+``apache.mod_uwsgi``
+-------------------
+
+Installs the mod_uwsgi package and enables the Apache module.
+
 ``apache.mod_actions``
 ----------------------
 
