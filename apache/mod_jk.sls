@@ -1,8 +1,9 @@
-{% from "apache/map.jinja" import apache with context %}
+{%- from "apache/map.jinja" import apache with context %}
 
 include:
   - apache
 
+{%- if salt['pillar.get']('apache:mod_jk') %}
 mod_jk:
   pkg.installed:
     - name: {{ apache.mod_jk }}
@@ -10,7 +11,7 @@ mod_jk:
     - require:
       - pkg: apache
 
-{% if grains['os_family']=="Debian" %}
+  {%- if grains['os_family']=="Debian" %}
 a2enmod jk:
   cmd.run:
     - unless: ls /etc/apache2/mods-enabled/jk.load
@@ -19,17 +20,17 @@ a2enmod jk:
       - pkg: mod_jk
     - watch_in:
       - module: apache-restart
-{% endif %}
+  {%- endif %}
 
-{% if grains['os_family']=="Suse" or salt['grains.get']('os') == 'SUSE' %}
+  {%- if grains['os_family']=="Suse" or salt['grains.get']('os') == 'SUSE' %}
 /etc/sysconfig/apache2:
   file.replace:
     - unless: grep '^APACHE_MODULES=.*jk' /etc/sysconfig/apache2
     - pattern: '^APACHE_MODULES=(.*)"'
     - repl: 'APACHE_MODULES=\1 jk"'
-{% endif %}
+  {%- endif %}
 
-{% if pillar['apache']['mod_jk']['workers'] is defined %}
+  {%- if pillar['apache']['mod_jk']['workers'] is defined %}
 {{ apache.confdir }}/jk-workers.conf:
   file.managed:
     - template: jinja
@@ -51,7 +52,7 @@ a2enconf jk-workers.conf:
     - watch_in:
       - module: apache-restart
 
-{% else %}
+  {%- else %}
 a2disconf jk-workers.conf:
   cmd.run:
     - name: a2disconf jk-workers
@@ -60,9 +61,9 @@ a2disconf jk-workers.conf:
       - pkg: apache
     - watch_in:
       - module: apache-restart
-{% endif %}
+  {%- endif %}
 
-{% if pillar['apache']['mod_jk']['loadbalancers'] is defined %}
+  {%- if pillar['apache']['mod_jk']['loadbalancers'] is defined %}
 {{ apache.confdir }}/jk-loadbalancers.conf:
   file.managed:
     - template: jinja
@@ -84,7 +85,7 @@ a2enconf jk-loadbalancers.conf:
     - watch_in:
       - module: apache-restart
 
-{% else %}
+  {%- else %}
 a2disconf jk-loadbalancers.conf:
   cmd.run:
     - name: a2disconf jk-loadbalancers
@@ -93,4 +94,5 @@ a2disconf jk-loadbalancers.conf:
       - pkg: apache
     - watch_in:
       - module: apache-restart
-{% endif %}
+  {%- endif %}
+{%- endif %}
